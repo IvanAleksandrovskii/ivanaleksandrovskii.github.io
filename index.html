@@ -58,7 +58,7 @@
         function toggleExpand() {
             try {
                 if (tg.isExpanded) {
-                    tg.closeExpanded();
+                    tg.close();
                     document.getElementById("status").innerText = "Closed expanded view";
                 } else {
                     tg.expand();
@@ -95,4 +95,3 @@
     </script>
 </body>
 </html>
-
