@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minimal Telegram WebApp</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <h1>Hello, Telegram WebApp!</h1>
+    <button onclick="toggleExpand()">Toggle Fullscreen</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+
+        function toggleExpand() {
+            if (tg.isExpanded) {
+                tg.closeExpanded();
+            } else {
+                tg.expand();
+            }
+        }
+
+        // Init WebApp
+        tg.ready();
+    </script>
+</body>
+</html>
