@@ -53,8 +53,6 @@
             if (tg) {
                 try {
                     tg.ready();
-                    tg.expand();
-                    isExpanded = true; // устанавливаем состояние полноэкранного режима
                     tg.setHeaderColor('#0088cc');
                     tg.setBackgroundColor('#f0f2f5');
 
@@ -75,6 +73,7 @@
 
                     tg.onEvent('viewportChanged', updateUI);
 
+                    isExpanded = tg.isExpanded;
                     status = "WebApp initialized successfully. Version: " + tg.version;
                 } catch (error) {
                     status = "Error initializing WebApp: " + error.message;
