@@ -91,9 +91,7 @@
             if (tg) {
                 try {
                     if (isExpanded) {
-                        tg.close();
-                        isExpanded = false; // меняем состояние полноэкранного режима
-                        document.getElementById("status").innerText = "Switched to compact view";
+                        document.getElementById("status").innerText = "Already in fullscreen mode";
                     } else {
                         tg.expand();
                         isExpanded = true; // меняем состояние полноэкранного режима
@@ -104,7 +102,7 @@
                     document.getElementById("status").innerText = "Error: " + error.message;
                 }
             } else {
-                document.getElementById("status").innerText = "WebApp is not available";
+                document.getElementById("status").innerText = "Fullscreen mode is not available on desktop";
             }
         }
 
