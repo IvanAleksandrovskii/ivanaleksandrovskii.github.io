@@ -48,9 +48,20 @@
         tg.setHeaderColor('#0088cc');
         tg.setBackgroundColor('#f0f2f5');
 
+        // Показываем кнопку "Назад" Telegram
+        tg.BackButton.show().onClick(() => {
+            window.history.back();  // Возвращаемся на предыдущую страницу
+        });
+
         function navigateToPage(page) {
             window.location.href = page;
         }
+
+        console.log("Second Page initialization status:", tg !== undefined);
+    </script>
+</body>
+</html>
+
 
         console.log("Second Page initialization status:", tg !== undefined);
     </script>
