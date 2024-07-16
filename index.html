@@ -38,29 +38,23 @@
         <h1>Advanced Telegram WebApp</h1>
         <p id="welcome">Welcome to the WebApp!</p>
         <button onclick="toggleExpand()">Toggle Fullscreen</button>
+        <button onclick="navigateToPage('second.html')">Go to Second Page</button>
         <div id="status"></div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
 
-        // Инициализация WebApp
         tg.ready();
-
-        // Расширяем WebApp при загрузке
         tg.expand();
-
-        // Настраиваем цветовую схему
         tg.setHeaderColor('#0088cc');
         tg.setBackgroundColor('#f0f2f5');
 
-        // Инициализация с данными пользователя
         const initData = tg.initDataUnsafe;
         if (initData && initData.user) {
             document.getElementById('welcome').innerText = `Welcome, ${initData.user.first_name}!`;
         }
 
-        // Функция переключения полноэкранного режима
         function toggleExpand() {
             try {
                 if (tg.isExpanded) {
@@ -76,19 +70,16 @@
             }
         }
 
-        // Настройка главной кнопки
         tg.MainButton.setText("Perform Main Action").show().onClick(() => {
             alert("Main action performed!");
         });
 
-        // Настройка кнопки "Назад"
         tg.BackButton.show().onClick(() => {
             if (confirm("Are you sure you want to go back?")) {
                 tg.close();
             }
         });
 
-        // Обработка изменения размера viewport
         tg.onEvent('viewportChanged', updateUI);
 
         function updateUI() {
@@ -96,8 +87,12 @@
             document.body.style.padding = isExpanded ? '40px' : '20px';
         }
 
-        // Вывод статуса инициализации в консоль
+        function navigateToPage(page) {
+            window.location.href = page;
+        }
+
         console.log("WebApp initialization status:", tg !== undefined);
     </script>
 </body>
 </html>
+
