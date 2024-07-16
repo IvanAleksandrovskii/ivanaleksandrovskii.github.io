@@ -37,7 +37,7 @@
     <div class="content">
         <h1>Advanced Telegram WebApp</h1>
         <p id="welcome">Welcome to the WebApp!</p>
-        <button onclick="toggleExpand()">Toggle Fullscreen</button>
+        <button id="toggleButton" onclick="toggleExpand()">Toggle Fullscreen</button>
         <button onclick="navigateToPage('second.html')">Go to Second Page</button>
         <div id="status"></div>
     </div>
@@ -83,6 +83,7 @@
                 status = "WebApp is not available. This might be a desktop environment.";
             }
 
+            updateButton();
             console.log("WebApp initialization status:", status);
             document.getElementById('status').innerText = status;
         }
@@ -91,7 +92,9 @@
             if (tg) {
                 try {
                     if (isExpanded) {
-                        document.getElementById("status").innerText = "Already in fullscreen mode";
+                        tg.close();
+                        isExpanded = false; // меняем состояние полноэкранного режима
+                        document.getElementById("status").innerText = "Switched to compact view";
                     } else {
                         tg.expand();
                         isExpanded = true; // меняем состояние полноэкранного режима
@@ -104,12 +107,18 @@
             } else {
                 document.getElementById("status").innerText = "Fullscreen mode is not available on desktop";
             }
+            updateButton();
         }
 
         function updateUI() {
             if (tg) {
                 document.body.style.padding = isExpanded ? '40px' : '20px';
             }
+        }
+
+        function updateButton() {
+            const toggleButton = document.getElementById("toggleButton");
+            toggleButton.innerText = isExpanded ? "Close App" : "Toggle Fullscreen";
         }
 
         function navigateToPage(page) {
