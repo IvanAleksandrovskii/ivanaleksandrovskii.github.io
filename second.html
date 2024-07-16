@@ -38,11 +38,13 @@
         <h1>Second Page</h1>
         <p>This is the second page of the WebApp.</p>
         <button onclick="navigateToPage('index.html')">Back to Main Page</button>
+        <div id="status"></div>
     </div>
 
     <script>
         let tg;
-        
+        let initStatus;
+
         if (window.Telegram && window.Telegram.WebApp) {
             tg = window.Telegram.WebApp;
             
@@ -55,14 +57,18 @@
                 window.history.back();  // Возвращаемся на предыдущую страницу
             });
             
-            console.log("Second Page initialization status: WebApp initialized successfully");
+            initStatus = "WebApp initialized successfully";
         } else {
-            console.log("Second Page initialization status: WebApp not available");
+            initStatus = "WebApp not available";
         }
 
         function navigateToPage(page) {
             window.location.href = page;
         }
+
+        // Выводим статус инициализации
+        console.log("Second Page initialization status:", initStatus);
+        document.getElementById('status').innerText = "Initialization status: " + initStatus;
     </script>
 </body>
 </html>
