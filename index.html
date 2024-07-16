@@ -44,12 +44,12 @@
 
     <script>
         let tg;
-
+        
         document.addEventListener('DOMContentLoaded', initWebApp);
 
         function initWebApp() {
             let status = "Initializing...";
-            tg = window.Telegram && window.Telegram.WebApp;
+            let tg = window.Telegram && window.Telegram.WebApp;
 
             if (tg !== undefined) {
                 try {
@@ -62,11 +62,6 @@
                     tg.setBackgroundColor('#f0f2f5');
 
                     // Остальной код инициализации WebApp...
-                    
-                    const initData = tg.initDataUnsafe;
-                    if (initData && initData.user) {
-                        document.getElementById('welcome').innerText = `Welcome, ${initData.user.first_name}!`;
-                    }
 
                 } catch (error) {
                     status = "Error initializing WebApp: " + error.message;
@@ -84,7 +79,8 @@
             if (tg) {
                 try {
                     if (tg.isExpanded) {
-                        tg.close();
+                        tg.viewportStableHeight = true;
+                        tg.viewportHeight = 600; // или другое желаемое значение
                         document.getElementById("status").innerText = "Switched to compact view";
                     } else {
                         tg.expand();
