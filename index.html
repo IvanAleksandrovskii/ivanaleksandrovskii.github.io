@@ -44,21 +44,25 @@
 
     <script>
         let tg;
+        
+        document.addEventListener('DOMContentLoaded', initWebApp);
 
         function initWebApp() {
             let status = "Initializing...";
             let tg = window.Telegram && window.Telegram.WebApp;
-        
-            if (tg) {
+
+            if (tg !== undefined) {
                 try {
                     tg.ready();
+                    status = "WebApp initialized successfully. Version: " + tg.version;
+
+                    // Дополнительные настройки WebApp
                     tg.expand();
                     tg.setHeaderColor('#0088cc');
                     tg.setBackgroundColor('#f0f2f5');
-        
+
                     // Остальной код инициализации WebApp...
-        
-                    status = "WebApp initialized successfully. Version: " + tg.version;
+
                 } catch (error) {
                     status = "Error initializing WebApp: " + error.message;
                 }
@@ -66,7 +70,7 @@
                 status = "WebApp is not available. This might be a desktop environment.";
                 // Здесь можно добавить альтернативную логику для десктопной версии
             }
-        
+
             console.log("WebApp initialization status:", status);
             document.getElementById('status').innerText = status;
         }
