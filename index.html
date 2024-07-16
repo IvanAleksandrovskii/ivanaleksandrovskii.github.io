@@ -44,7 +44,7 @@
 
     <script>
         let tg;
-        let isExpanded = false; // состояние полноэкранного режима
+        let isExpanded = false;
 
         function initWebApp() {
             let status = "Initializing WebApp...";
@@ -74,6 +74,8 @@
                     tg.onEvent('viewportChanged', updateUI);
 
                     isExpanded = tg.isExpanded;
+                    updateButton();
+
                     status = "WebApp initialized successfully. Version: " + tg.version;
                 } catch (error) {
                     status = "Error initializing WebApp: " + error.message;
@@ -82,7 +84,6 @@
                 status = "WebApp is not available. This might be a desktop environment.";
             }
 
-            updateButton();
             console.log("WebApp initialization status:", status);
             document.getElementById('status').innerText = status;
         }
@@ -92,13 +93,14 @@
                 try {
                     if (isExpanded) {
                         tg.close();
-                        isExpanded = false; // меняем состояние полноэкранного режима
-                        document.getElementById("status").innerText = "Switched to compact view";
+                        isExpanded = false;
+                        document.getElementById("status").innerText = "Exiting...";
                     } else {
                         tg.expand();
-                        isExpanded = true; // меняем состояние полноэкранного режима
+                        isExpanded = true;
                         document.getElementById("status").innerText = "Expanded view";
                     }
+                    updateButton();
                 } catch (error) {
                     console.error("Error toggling expand:", error);
                     document.getElementById("status").innerText = "Error: " + error.message;
@@ -106,7 +108,6 @@
             } else {
                 document.getElementById("status").innerText = "Fullscreen mode is not available on desktop";
             }
-            updateButton();
         }
 
         function updateUI() {
@@ -124,7 +125,6 @@
             window.location.href = page;
         }
 
-        // Вызываем функцию инициализации после загрузки страницы
         window.onload = initWebApp;
     </script>
 </body>
