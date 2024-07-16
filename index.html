@@ -1,23 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Telegram WebApp</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+            transition: padding 0.3s ease;
+        }
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        button {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #status {
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
 <body>
-    <h1>Hello, Telegram WebApp!</h1>
-    <div id="status"></div>
+    <div class="content">
+        <h1>Advanced Telegram WebApp</h1>
+        <p id="welcome">Welcome to the WebApp!</p>
+        <button onclick="toggleExpand()">Toggle Fullscreen</button>
+        <div id="status"></div>
+    </div>
 
     <script>
         const tg = window.Telegram.WebApp;
 
-        tg.MainButton.setText("Toggle Fullscreen").show().onClick(toggleExpand);
+        // Инициализация WebApp
+        tg.ready();
 
+        // Расширяем WebApp при загрузке
+        tg.expand();
+
+        // Настраиваем цветовую схему
+        tg.setHeaderColor('#0088cc');
+        tg.setBackgroundColor('#f0f2f5');
+
+        // Инициализация с данными пользователя
+        const initData = tg.initDataUnsafe;
+        if (initData && initData.user) {
+            document.getElementById('welcome').innerText = `Welcome, ${initData.user.first_name}!`;
+        }
+
+        // Функция переключения полноэкранного режима
         function toggleExpand() {
-            if (tg.isExpanded) {
-                tg.closeExpanded();
-                document.getElementById("status").innerText = "Closed expanded view";
-            } else {
-                tg.expand();
-                document.getElementById("status").innerText = "Expanded view";
+            try {
+                if (tg.isExpanded) {
+                    tg.closeExpanded();
+                    document.getElementById("status").innerText = "Closed expanded view";
+                } else {
+                    tg.expand();
+                    document.getElementById("status").innerText = "Expanded view";
+                }
+            } catch (error) {
+                console.error("Error toggling expand:", error);
+                document.getElementById("status").innerText = "Error: " + error.message;
             }
         }
 
-        // Init WebApp
-        tg.ready();
+        // Настройка главной кнопки
+        tg.MainButton.setText("Perform Main Action").show().onClick(() => {
+            alert("Main action performed!");
+        });
+
+        // Настройка кнопки "Назад"
+        tg.BackButton.show().onClick(() => {
+            if (confirm("Are you sure you want to go back?")) {
+                tg.close();
+            }
+        });
+
+        // Обработка изменения размера viewport
+        tg.onEvent('viewportChanged', updateUI);
+
+        function updateUI() {
+            const isExpanded = tg.isExpanded;
+            document.body.style.padding = isExpanded ? '40px' : '20px';
+        }
+
+        // Вывод статуса инициализации в консоль
+        console.log("WebApp initialization status:", tg !== undefined);
     </script>
 </body>
+</html>
