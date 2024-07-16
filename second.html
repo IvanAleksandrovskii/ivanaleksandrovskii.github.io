@@ -12,7 +12,6 @@
             padding: 20px;
             background-color: #f0f2f5;
             color: #333;
-            transition: padding 0.3s ease;
         }
         .content {
             max-width: 800px;
@@ -42,33 +41,39 @@
     </div>
 
     <script>
-        let tg;
-        let initStatus;
-
-        if (window.Telegram && window.Telegram.WebApp) {
-            tg = window.Telegram.WebApp;
+        // Функция для проверки и инициализации WebApp
+        function initWebApp() {
+            let status = "Checking WebApp status...";
             
-            tg.ready();
-            tg.expand();
-            tg.setHeaderColor('#0088cc');
-            tg.setBackgroundColor('#f0f2f5');
-
-            tg.BackButton.show().onClick(() => {
-                window.history.back();  // Возвращаемся на предыдущую страницу
-            });
+            if (window.Telegram && window.Telegram.WebApp) {
+                let tg = window.Telegram.WebApp;
+                
+                try {
+                    tg.ready();
+                    tg.expand();
+                    
+                    tg.BackButton.show().onClick(() => {
+                        window.history.back();
+                    });
+                    
+                    status = "WebApp initialized successfully. Version: " + tg.version;
+                } catch (error) {
+                    status = "Error initializing WebApp: " + error.message;
+                }
+            } else {
+                status = "WebApp is not available";
+            }
             
-            initStatus = "WebApp initialized successfully";
-        } else {
-            initStatus = "WebApp not available";
+            console.log("Second Page initialization status:", status);
+            document.getElementById('status').innerText = status;
         }
 
         function navigateToPage(page) {
             window.location.href = page;
         }
 
-        // Выводим статус инициализации
-        console.log("Second Page initialization status:", initStatus);
-        document.getElementById('status').innerText = "Initialization status: " + initStatus;
+        // Вызываем функцию инициализации после загрузки страницы
+        window.onload = initWebApp;
     </script>
 </body>
 </html>
