@@ -44,33 +44,43 @@
 
     <script>
         let tg;
-        
-        document.addEventListener('DOMContentLoaded', initWebApp);
 
         function initWebApp() {
-            let status = "Initializing...";
-            let tg = window.Telegram && window.Telegram.WebApp;
-
-            if (tg !== undefined) {
+            let status = "Initializing WebApp...";
+            tg = window.Telegram && window.Telegram.WebApp;
+            
+            if (tg) {
                 try {
                     tg.ready();
-                    status = "WebApp initialized successfully. Version: " + tg.version;
-
-                    // Дополнительные настройки WebApp
                     tg.expand();
                     tg.setHeaderColor('#0088cc');
                     tg.setBackgroundColor('#f0f2f5');
 
-                    // Остальной код инициализации WebApp...
+                    const initData = tg.initDataUnsafe;
+                    if (initData && initData.user) {
+                        document.getElementById('welcome').innerText = `Welcome, ${initData.user.first_name}!`;
+                    }
 
+                    tg.MainButton.setText("Perform Main Action").show().onClick(() => {
+                        alert("Main action performed!");
+                    });
+
+                    tg.BackButton.show().onClick(() => {
+                        if (confirm("Are you sure you want to go back?")) {
+                            tg.close();
+                        }
+                    });
+
+                    tg.onEvent('viewportChanged', updateUI);
+
+                    status = "WebApp initialized successfully. Version: " + tg.version;
                 } catch (error) {
                     status = "Error initializing WebApp: " + error.message;
                 }
             } else {
                 status = "WebApp is not available. This might be a desktop environment.";
-                // Здесь можно добавить альтернативную логику для десктопной версии
             }
-
+            
             console.log("WebApp initialization status:", status);
             document.getElementById('status').innerText = status;
         }
@@ -79,7 +89,7 @@
             if (tg) {
                 try {
                     if (tg.isExpanded) {
-                        tg.viewportStableHeight = true;
+                        tg.viewportStableHeight = true; 
                         tg.viewportHeight = 600; // или другое желаемое значение
                         document.getElementById("status").innerText = "Switched to compact view";
                     } else {
