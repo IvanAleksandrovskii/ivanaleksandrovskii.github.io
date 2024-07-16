@@ -48,7 +48,7 @@
         function initWebApp() {
             let status = "Initializing WebApp...";
             tg = window.Telegram && window.Telegram.WebApp;
-            
+
             if (tg) {
                 try {
                     tg.ready();
@@ -80,7 +80,7 @@
             } else {
                 status = "WebApp is not available. This might be a desktop environment.";
             }
-            
+
             console.log("WebApp initialization status:", status);
             document.getElementById('status').innerText = status;
         }
@@ -89,8 +89,7 @@
             if (tg) {
                 try {
                     if (tg.isExpanded) {
-                        tg.viewportStableHeight = true; 
-                        tg.viewportHeight = 600; // или другое желаемое значение
+                        tg.close();
                         document.getElementById("status").innerText = "Switched to compact view";
                     } else {
                         tg.expand();
