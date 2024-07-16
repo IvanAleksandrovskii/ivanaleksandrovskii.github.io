@@ -44,6 +44,7 @@
 
     <script>
         let tg;
+        let isExpanded = false; // состояние полноэкранного режима
 
         function initWebApp() {
             let status = "Initializing WebApp...";
@@ -53,6 +54,7 @@
                 try {
                     tg.ready();
                     tg.expand();
+                    isExpanded = true; // устанавливаем состояние полноэкранного режима
                     tg.setHeaderColor('#0088cc');
                     tg.setBackgroundColor('#f0f2f5');
 
@@ -88,11 +90,13 @@
         function toggleExpand() {
             if (tg) {
                 try {
-                    if (tg.isExpanded) {
+                    if (isExpanded) {
                         tg.close();
+                        isExpanded = false; // меняем состояние полноэкранного режима
                         document.getElementById("status").innerText = "Switched to compact view";
                     } else {
                         tg.expand();
+                        isExpanded = true; // меняем состояние полноэкранного режима
                         document.getElementById("status").innerText = "Expanded view";
                     }
                 } catch (error) {
@@ -106,7 +110,6 @@
 
         function updateUI() {
             if (tg) {
-                const isExpanded = tg.isExpanded;
                 document.body.style.padding = isExpanded ? '40px' : '20px';
             }
         }
