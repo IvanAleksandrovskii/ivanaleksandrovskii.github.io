@@ -31,6 +31,15 @@
             margin-top: 20px;
             font-style: italic;
         }
+        .red-button {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -114,11 +123,12 @@
         // Вызываем функцию инициализации после загрузки страницы
         window.onload = initWebApp;
     </script>
-        <!-- Обычная HTML-часть страницы -->
+
+    <!-- Обычная HTML-часть страницы -->
     <div class="content">
         <h2>Standard HTML Section</h2>
-        <p>This is a standard HTML section with a link to the second page:</p>
-        <a href="second.html" class="link">Go to Second Page</a>
+        <p>This is a standard HTML section with a button to go to the second page:</p>
+        <button class="red-button" onclick="navigateToPage('second.html')">Go to Second Page</button>
     </div>
 </body>
 </html>
