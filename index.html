@@ -40,6 +40,7 @@
         <button id="exitButton" onclick="exitWithConfirmation()">Exit App</button>
         <button onclick="navigateToPage('second.html')">Go to Second Page</button>
         <div id="status"></div>
+        <div id="mainActionStatus"></div> <!-- Добавлен новый элемент для отображения статуса действия -->
     </div>
 
     <script>
@@ -61,7 +62,7 @@
                     }
 
                     tg.MainButton.setText("Perform Main Action").show().onClick(() => {
-                        alert("Main action performed!");
+                        performMainAction();
                     });
 
                     tg.BackButton.show().onClick(() => {
@@ -105,31 +106,9 @@
         }
 
         function performMainAction() {
-            if (tg) {
-                try {
-                    // Пример отправки POST-запроса на сервер
-                    fetch('https://your-server-url/perform-action', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ user_id: tg.initDataUnsafe.user.id, action: 'main_action' })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(`Action performed successfully: ${data.message}`);
-                    })
-                    .catch(error => {
-                        console.error('Error performing main action:', error);
-                        alert(`Error performing main action: ${error.message}`);
-                    });
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert(`Error: ${error.message}`);
-                }
-            } else {
-                alert('Telegram WebApp is not initialized');
-            }
+            const mainActionStatus = document.getElementById('mainActionStatus');
+            mainActionStatus.innerText = "Main action performed successfully!";
+            mainActionStatus.style.color = "green";
         }
 
         // Вызываем функцию инициализации после загрузки страницы
