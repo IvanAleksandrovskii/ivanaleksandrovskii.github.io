@@ -44,12 +44,14 @@
 
     <script>
         let tg;
+        let isWebApp;
 
         function initWebApp() {
             let status = "Initializing WebApp...";
             tg = window.Telegram && window.Telegram.WebApp;
+            isWebApp = !!tg;
 
-            if (tg) {
+            if (isWebApp) {
                 try {
                     tg.ready();
                     tg.setHeaderColor('#0088cc');
@@ -65,9 +67,7 @@
                     });
 
                     tg.BackButton.show().onClick(() => {
-                        if (confirm("Are you sure you want to go back?")) {
-                            tg.close();
-                        }
+                        closeApp();
                     });
 
                     tg.onEvent('viewportChanged', updateUI);
@@ -77,25 +77,27 @@
                     status = "Error initializing WebApp: " + error.message;
                 }
             } else {
-                status = "WebApp is not available. This might be a desktop environment.";
+                status = "Running in browser mode.";
+                document.getElementById('closeButton').style.display = 'none';
             }
 
-            console.log("WebApp initialization status:", status);
+            console.log("Initialization status:", status);
             document.getElementById('status').innerText = status;
+            updateUI();
         }
 
         function closeApp() {
-            if (tg) {
-                if (confirm("Are you sure you want to close the app?")) {
+            if (confirm("Are you sure you want to close the app?")) {
+                if (isWebApp) {
                     tg.close();
+                } else {
+                    window.close();
                 }
-            } else {
-                document.getElementById("status").innerText = "Close function is not available on desktop";
             }
         }
 
         function updateUI() {
-            if (tg && tg.isExpanded) {
+            if (isWebApp && tg.isExpanded) {
                 document.body.style.padding = '40px';
             } else {
                 document.body.style.padding = '20px';
@@ -106,6 +108,10 @@
             window.location.href = page;
         }
 
+        window.onload = initWebApp;
+    </script>
+</body>
+</html>
         window.onload = initWebApp;
     </script>
 </body>
