@@ -37,21 +37,20 @@
     <div class="content">
         <h1>Advanced Telegram WebApp</h1>
         <p id="welcome">Welcome to the WebApp!</p>
-        <button id="closeButton" onclick="closeApp()">Close App</button>
+        <button id="toggleButton" onclick="toggleExpand()">Toggle Fullscreen</button>
         <button onclick="navigateToPage('second.html')">Go to Second Page</button>
         <div id="status"></div>
     </div>
 
     <script>
         let tg;
-        let isWebApp;
+        let isExpanded = false;
 
         function initWebApp() {
             let status = "Initializing WebApp...";
             tg = window.Telegram && window.Telegram.WebApp;
-            isWebApp = !!tg;
 
-            if (isWebApp) {
+            if (tg) {
                 try {
                     tg.ready();
                     tg.setHeaderColor('#0088cc');
@@ -62,57 +61,73 @@
                         document.getElementById('welcome').innerText = `Welcome, ${initData.user.first_name}!`;
                     }
 
-                    tg.MainButton.setText("Perform Main Action").show().onClick(() => {
-                        alert("Main action performed!");
-                    });
+                    tg.MainButton.setText("Perform Main Action").show().onClick(performMainAction);
 
                     tg.BackButton.show().onClick(() => {
-                        closeApp();
+                        if (confirm("Are you sure you want to go back?")) {
+                            tg.close();
+                        }
                     });
 
-                    tg.onEvent('viewportChanged', updateUI);
+                    tg.onEvent('viewportChanged', handleViewportChanged);
 
+                    isExpanded = tg.isExpanded;
                     status = "WebApp initialized successfully. Version: " + tg.version;
                 } catch (error) {
                     status = "Error initializing WebApp: " + error.message;
                 }
             } else {
-                status = "Running in browser mode.";
-                document.getElementById('closeButton').style.display = 'none';
+                status = "WebApp is not available. This might be a desktop environment.";
             }
 
-            console.log("Initialization status:", status);
+            updateButton();
+            console.log("WebApp initialization status:", status);
             document.getElementById('status').innerText = status;
+        }
+
+        function toggleExpand() {
+            if (tg) {
+                try {
+                    if (isExpanded) {
+                        tg.close();
+                    } else {
+                        tg.expand();
+                    }
+                } catch (error) {
+                    console.error("Error toggling expand:", error);
+                    document.getElementById("status").innerText = "Error: " + error.message;
+                }
+            } else {
+                document.getElementById("status").innerText = "Fullscreen mode is not available on desktop";
+            }
+        }
+
+        function handleViewportChanged(event) {
+            isExpanded = tg.isExpanded;
+            updateButton();
             updateUI();
         }
 
-        function closeApp() {
-            if (confirm("Are you sure you want to close the app?")) {
-                if (isWebApp) {
-                    tg.close();
-                } else {
-                    window.close();
-                }
+        function updateUI() {
+            if (tg) {
+                document.body.style.padding = isExpanded ? '40px' : '20px';
             }
         }
 
-        function updateUI() {
-            if (isWebApp && tg.isExpanded) {
-                document.body.style.padding = '40px';
-            } else {
-                document.body.style.padding = '20px';
-            }
+        function updateButton() {
+            const toggleButton = document.getElementById("toggleButton");
+            toggleButton.innerText = isExpanded ? "Close App" : "Toggle Fullscreen";
         }
 
         function navigateToPage(page) {
             window.location.href = page;
         }
 
-        window.onload = initWebApp;
-    </script>
-</body>
-</html>
-        window.onload = initWebApp;
+        function performMainAction() {
+            alert("Main action performed!");
+        }
+
+        initWebApp();
     </script>
 </body>
 </html>
