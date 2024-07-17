@@ -44,7 +44,7 @@
 
     <script>
         let tg;
-        let isExpanded = false;
+        let isExpanded = false; // состояние полноэкранного режима
 
         function initWebApp() {
             let status = "Initializing WebApp...";
@@ -72,10 +72,9 @@
                     });
 
                     tg.onEvent('viewportChanged', updateUI);
+                    tg.onEvent('viewportChanged', handleViewportChanged);
 
                     isExpanded = tg.isExpanded;
-                    updateButton();
-
                     status = "WebApp initialized successfully. Version: " + tg.version;
                 } catch (error) {
                     status = "Error initializing WebApp: " + error.message;
@@ -84,23 +83,20 @@
                 status = "WebApp is not available. This might be a desktop environment.";
             }
 
+            updateButton();
             console.log("WebApp initialization status:", status);
             document.getElementById('status').innerText = status;
         }
+
 
         function toggleExpand() {
             if (tg) {
                 try {
                     if (isExpanded) {
                         tg.close();
-                        isExpanded = false;
-                        document.getElementById("status").innerText = "Exiting...";
                     } else {
                         tg.expand();
-                        isExpanded = true;
-                        document.getElementById("status").innerText = "Expanded view";
                     }
-                    updateButton();
                 } catch (error) {
                     console.error("Error toggling expand:", error);
                     document.getElementById("status").innerText = "Error: " + error.message;
@@ -109,22 +105,57 @@
                 document.getElementById("status").innerText = "Fullscreen mode is not available on desktop";
             }
         }
-
+        
+        function handleViewportChanged(event) {
+            isExpanded = event.isStateStable;
+            updateButton();
+            updateUI();
+        }
+        
+        function updateButton() {
+            const toggleButton = document.getElementById("toggleButton");
+            toggleButton.innerText = isExpanded ? "Exit Fullscreen" : "Enter Fullscreen";
+        }
+        
         function updateUI() {
             if (tg) {
                 document.body.style.padding = isExpanded ? '40px' : '20px';
             }
         }
 
-        function updateButton() {
-            const toggleButton = document.getElementById("toggleButton");
-            toggleButton.innerText = isExpanded ? "Close App" : "Toggle Fullscreen";
-        }
-
         function navigateToPage(page) {
             window.location.href = page;
         }
 
+        function performMainAction() {
+            if (tg) {
+                try {
+                    // Пример отправки POST-запроса на сервер
+                    fetch('https://your-server-url/perform-action', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ user_id: tg.initDataUnsafe.user.id, action: 'main_action' })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(`Action performed successfully: ${data.message}`);
+                    })
+                    .catch(error => {
+                        console.error('Error performing main action:', error);
+                        alert(`Error performing main action: ${error.message}`);
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(`Error: ${error.message}`);
+                }
+            } else {
+                alert('Telegram WebApp is not initialized');
+            }
+        }
+
+        // Вызываем функцию инициализации после загрузки страницы
         window.onload = initWebApp;
     </script>
 </body>
