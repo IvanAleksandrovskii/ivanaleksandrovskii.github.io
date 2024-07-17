@@ -105,18 +105,18 @@
                 document.getElementById("status").innerText = "Fullscreen mode is not available on desktop";
             }
         }
-        
+
         function handleViewportChanged(event) {
             isExpanded = event.isStateStable;
             updateButton();
             updateUI();
         }
-        
+
         function updateButton() {
             const toggleButton = document.getElementById("toggleButton");
             toggleButton.innerText = isExpanded ? "Exit Fullscreen" : "Enter Fullscreen";
         }
-        
+
         function updateUI() {
             if (tg) {
                 document.body.style.padding = isExpanded ? '40px' : '20px';
