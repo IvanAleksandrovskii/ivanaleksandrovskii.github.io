@@ -37,14 +37,13 @@
     <div class="content">
         <h1>Advanced Telegram WebApp</h1>
         <p id="welcome">Welcome to the WebApp!</p>
-        <button id="toggleButton" onclick="toggleExpand()">Toggle Fullscreen</button>
+        <button id="closeButton" onclick="closeApp()">Close App</button>
         <button onclick="navigateToPage('second.html')">Go to Second Page</button>
         <div id="status"></div>
     </div>
 
     <script>
         let tg;
-        let isExpanded = false; // состояние полноэкранного режима
 
         function initWebApp() {
             let status = "Initializing WebApp...";
@@ -73,7 +72,6 @@
 
                     tg.onEvent('viewportChanged', updateUI);
 
-                    isExpanded = tg.isExpanded;
                     status = "WebApp initialized successfully. Version: " + tg.version;
                 } catch (error) {
                     status = "Error initializing WebApp: " + error.message;
@@ -82,81 +80,32 @@
                 status = "WebApp is not available. This might be a desktop environment.";
             }
 
-            updateButton();
             console.log("WebApp initialization status:", status);
             document.getElementById('status').innerText = status;
         }
 
-        function toggleExpand() {
+        function closeApp() {
             if (tg) {
-                try {
-                    if (isExpanded) {
-                        tg.close();
-                        isExpanded = false; // меняем состояние полноэкранного режима
-                        document.getElementById("status").innerText = "Switched to compact view";
-                    } else {
-                        tg.expand();
-                        isExpanded = true; // меняем состояние полноэкранного режима
-                        document.getElementById("status").innerText = "Expanded view";
-                    }
-                } catch (error) {
-                    console.error("Error toggling expand:", error);
-                    document.getElementById("status").innerText = "Error: " + error.message;
+                if (confirm("Are you sure you want to close the app?")) {
+                    tg.close();
                 }
             } else {
-                document.getElementById("status").innerText = "Fullscreen mode is not available on desktop";
+                document.getElementById("status").innerText = "Close function is not available on desktop";
             }
-            updateButton();
         }
 
         function updateUI() {
-            if (tg) {
-                document.body.style.padding = isExpanded ? '40px' : '20px';
+            if (tg && tg.isExpanded) {
+                document.body.style.padding = '40px';
+            } else {
+                document.body.style.padding = '20px';
             }
-        }
-
-        function updateButton() {
-            const toggleButton = document.getElementById("toggleButton");
-            toggleButton.innerText = isExpanded ? "Close App" : "Toggle Fullscreen";
         }
 
         function navigateToPage(page) {
             window.location.href = page;
         }
 
-        function performMainAction() {
-            if (tg) {
-                try {
-                    // Пример отправки POST-запроса на сервер
-                    fetch('https://your-server-url/perform-action', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ user_id: tg.initDataUnsafe.user.id, action: 'main_action' })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(`Action performed successfully: ${data.message}`);
-                    })
-                    .catch(error => {
-                        console.error('Error performing main action:', error);
-                        alert(`Error performing main action: ${error.message}`);
-                    });
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert(`Error: ${error.message}`);
-                }
-            } else {
-                alert('Telegram WebApp is not initialized');
-            }
-        }
-
-        // Вызываем функцию инициализации после загрузки страницы
-        window.onload = initWebApp;
-    </script>
-</body>
-</html>
         window.onload = initWebApp;
     </script>
 </body>
