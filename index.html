@@ -80,6 +80,7 @@
                 status = "WebApp is not available. This might be a desktop environment.";
             }
 
+            restoreButtonState();
             console.log("WebApp initialization status:", status);
             document.getElementById('status').innerText = status;
         }
@@ -101,7 +102,20 @@
         }
 
         function navigateToPage(page) {
+            saveButtonState();
             window.location.href = page;
+        }
+
+        function saveButtonState() {
+            const buttonText = document.getElementById("exitButton").innerText;
+            localStorage.setItem("exitButtonText", buttonText);
+        }
+
+        function restoreButtonState() {
+            const buttonText = localStorage.getItem("exitButtonText");
+            if (buttonText) {
+                document.getElementById("exitButton").innerText = buttonText;
+            }
         }
 
         function performMainAction() {
