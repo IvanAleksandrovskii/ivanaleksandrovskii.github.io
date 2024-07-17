@@ -6,23 +6,47 @@
     <title>Advanced Telegram WebApp</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* ... (оставьте стили без изменений) ... */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+            transition: padding 0.3s ease;
+        }
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        button {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #status {
+            margin-top: 20px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
     <div class="content">
         <h1>Advanced Telegram WebApp</h1>
         <p id="welcome">Welcome to the WebApp!</p>
-        <button id="toggleButton" onclick="toggleExpand()">Toggle Fullscreen</button>
+        <button id="exitButton" onclick="confirmExit()">Exit</button>
         <button onclick="navigateToPage('second.html')">Go to Second Page</button>
         <div id="status"></div>
     </div>
 
     <script>
         let tg;
-        let isExpanded = false;
 
         function initWebApp() {
+            let status = "Initializing WebApp...";
             tg = window.Telegram && window.Telegram.WebApp;
 
             if (tg) {
@@ -36,7 +60,9 @@
                         document.getElementById('welcome').innerText = `Welcome, ${initData.user.first_name}!`;
                     }
 
-                    tg.MainButton.setText("Perform Main Action").show().onClick(performMainAction);
+                    tg.MainButton.setText("Perform Main Action").show().onClick(() => {
+                        alert("Main action performed!");
+                    });
 
                     tg.BackButton.show().onClick(() => {
                         if (confirm("Are you sure you want to go back?")) {
@@ -44,51 +70,34 @@
                         }
                     });
 
-                    tg.onEvent('viewportChanged', handleViewportChanged);
+                    tg.onEvent('viewportChanged', updateUI);
 
-                    isExpanded = tg.isExpanded;
-                    document.getElementById('status').innerText = `WebApp Version: ${tg.version}`;
+                    status = "WebApp initialized successfully. Version: " + tg.version;
                 } catch (error) {
-                    console.error("Error initializing WebApp:", error);
+                    status = "Error initializing WebApp: " + error.message;
                 }
             } else {
-                console.log("WebApp is not available. This might be a desktop environment.");
+                status = "WebApp is not available. This might be a desktop environment.";
             }
 
-            updateButton();
+            console.log("WebApp initialization status:", status);
+            document.getElementById('status').innerText = status;
         }
 
-        function toggleExpand() {
+        function confirmExit() {
             if (tg) {
-                try {
-                    if (isExpanded) {
-                        tg.close();
-                    } else {
-                        tg.expand();
-                    }
-                } catch (error) {
-                    console.error("Error toggling expand:", error);
+                if (confirm("Are you sure you want to exit?")) {
+                    tg.close();
                 }
             } else {
-                console.log("Fullscreen mode is not available on desktop");
+                alert("Exit functionality is not available on desktop.");
             }
-        }
-
-        function handleViewportChanged() {
-            isExpanded = tg.isExpanded;
-            updateButton();
-            updateUI();
         }
 
         function updateUI() {
             if (tg) {
-                document.body.style.padding = isExpanded ? '40px' : '20px';
+                document.body.style.padding = '20px';
             }
-        }
-
-        function updateButton() {
-            const toggleButton = document.getElementById("toggleButton");
-            toggleButton.innerText = isExpanded ? "Close App" : "Toggle Fullscreen";
         }
 
         function navigateToPage(page) {
@@ -96,11 +105,35 @@
         }
 
         function performMainAction() {
-            alert("Main action performed!");
+            if (tg) {
+                try {
+                    // Пример отправки POST-запроса на сервер
+                    fetch('https://your-server-url/perform-action', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ user_id: tg.initDataUnsafe.user.id, action: 'main_action' })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(`Action performed successfully: ${data.message}`);
+                    })
+                    .catch(error => {
+                        console.error('Error performing main action:', error);
+                        alert(`Error performing main action: ${error.message}`);
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(`Error: ${error.message}`);
+                }
+            } else {
+                alert('Telegram WebApp is not initialized');
+            }
         }
 
-        // Инициализация WebApp
-        initWebApp();
+        // Вызываем функцию инициализации после загрузки страницы
+        window.onload = initWebApp;
     </script>
 </body>
 </html>
