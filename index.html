@@ -37,7 +37,7 @@
     <div class="content">
         <h1>Advanced Telegram WebApp</h1>
         <p id="welcome">Welcome to the WebApp!</p>
-        <button id="exitButton" onclick="confirmExit()">Exit</button>
+        <button id="exitButton" onclick="exitWithConfirmation()">Exit App</button>
         <button onclick="navigateToPage('second.html')">Go to Second Page</button>
         <div id="status"></div>
     </div>
@@ -80,42 +80,28 @@
                 status = "WebApp is not available. This might be a desktop environment.";
             }
 
-            restoreButtonState();
             console.log("WebApp initialization status:", status);
             document.getElementById('status').innerText = status;
         }
 
-        function confirmExit() {
+        function exitWithConfirmation() {
             if (tg) {
-                if (confirm("Are you sure you want to exit?")) {
+                if (confirm("Are you sure you want to exit the app?")) {
                     tg.close();
                 }
             } else {
-                alert("Exit functionality is not available on desktop.");
+                document.getElementById("status").innerText = "Exit function is not available on desktop";
             }
         }
 
         function updateUI() {
             if (tg) {
-                document.body.style.padding = '20px';
+                document.body.style.padding = tg.isExpanded ? '40px' : '20px';
             }
         }
 
         function navigateToPage(page) {
-            saveButtonState();
             window.location.href = page;
-        }
-
-        function saveButtonState() {
-            const buttonText = document.getElementById("exitButton").innerText;
-            localStorage.setItem("exitButtonText", buttonText);
-        }
-
-        function restoreButtonState() {
-            const buttonText = localStorage.getItem("exitButtonText");
-            if (buttonText) {
-                document.getElementById("exitButton").innerText = buttonText;
-            }
         }
 
         function performMainAction() {
