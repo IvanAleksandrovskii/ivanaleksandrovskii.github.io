@@ -40,6 +40,12 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -116,8 +122,22 @@
 
         function performMainAction() {
             const mainActionStatus = document.getElementById('mainActionStatus');
-            mainActionStatus.innerText = "Main action performed successfully!";
-            mainActionStatus.style.color = "green";
+            mainActionStatus.innerHTML = `
+                <label for="options">Choose an option:</label>
+                <select id="options" onchange="optionSelected()">
+                    <option value="" selected disabled>Select an option</option>
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                    <option value="Option 3">Option 3</option>
+                </select>
+                <p id="selectionResult"></p>
+            `;
+        }
+
+        function optionSelected() {
+            const selectionResult = document.getElementById('selectionResult');
+            const selectedOption = document.getElementById('options').value;
+            selectionResult.innerText = `You selected: ${selectedOption}`;
         }
 
         // Вызываем функцию инициализации после загрузки страницы
