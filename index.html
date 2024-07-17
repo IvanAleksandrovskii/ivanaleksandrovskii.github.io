@@ -23,7 +23,6 @@
         let isExpanded = false;
 
         function initWebApp() {
-            let status = "Initializing WebApp...";
             tg = window.Telegram && window.Telegram.WebApp;
 
             if (tg) {
@@ -48,17 +47,15 @@
                     tg.onEvent('viewportChanged', handleViewportChanged);
 
                     isExpanded = tg.isExpanded;
-                    status = "WebApp initialized successfully. Version: " + tg.version;
+                    document.getElementById('status').innerText = `WebApp Version: ${tg.version}`;
                 } catch (error) {
-                    status = "Error initializing WebApp: " + error.message;
+                    console.error("Error initializing WebApp:", error);
                 }
             } else {
-                status = "WebApp is not available. This might be a desktop environment.";
+                console.log("WebApp is not available. This might be a desktop environment.");
             }
 
             updateButton();
-            console.log("WebApp initialization status:", status);
-            document.getElementById('status').innerText = status;
         }
 
         function toggleExpand() {
@@ -71,14 +68,13 @@
                     }
                 } catch (error) {
                     console.error("Error toggling expand:", error);
-                    document.getElementById("status").innerText = "Error: " + error.message;
                 }
             } else {
-                document.getElementById("status").innerText = "Fullscreen mode is not available on desktop";
+                console.log("Fullscreen mode is not available on desktop");
             }
         }
 
-        function handleViewportChanged(event) {
+        function handleViewportChanged() {
             isExpanded = tg.isExpanded;
             updateButton();
             updateUI();
@@ -103,8 +99,8 @@
             alert("Main action performed!");
         }
 
-        // Вызываем функцию инициализации после загрузки DOM
-        document.addEventListener('DOMContentLoaded', initWebApp);
+        // Инициализация WebApp
+        initWebApp();
     </script>
 </body>
 </html>
